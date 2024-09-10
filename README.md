@@ -20,8 +20,8 @@ The project is set up as a monorepo with multiple applications:
 1. Clone the repository:
 
    ```
-   git clone <repository-url>
-   cd <project-directory>
+   git clone https://github.com/Ejay02/food_delivery.git
+ 
    ```
 
 2. Install dependencies:
