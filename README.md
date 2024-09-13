@@ -31,13 +31,13 @@ The project is set up as a monorepo with multiple applications:
    ```
 
 3. Set up environment variables:
-   Create a `.env` file in the root directory and add necessary environment variables.
+   Create a `.env` file in the root directory and add the necessary environment variables.
 
 ## Running the Application
 
 To run the application in development mode:
 
-1. Start the users microservice:
+1. Start the users' microservice:
 
    ```
    npm run start:dev users
@@ -50,20 +50,7 @@ To run the application in development mode:
 
 The application should now be running and accessible.
 
-## Scripts
 
-- `npm run build`: Build the application
-- `npm run format`: Format the code using Prettier
-- `npm run start`: Start the application
-- `npm run start:dev`: Start the application in watch mode
-- `npm run start:debug`: Start the application in debug mode
-- `npm run start:prod`: Start the application in production mode
-- `npm run lint`: Lint the code
-- `npm test`: Run tests
-- `npm run test:watch`: Run tests in watch mode
-- `npm run test:cov`: Run tests with coverage
-- `npm run test:debug`: Debug tests
-- `npm run test:e2e`: Run end-to-end tests
 
 ## Dependencies
 
@@ -72,23 +59,74 @@ Key dependencies include:
 - NestJS framework and related packages
 - Apollo Server for GraphQL
 - Prisma as the ORM
-- Jest for testing
 - ESLint and Prettier for code quality
 
-For a full list of dependencies, refer to the `package.json` file.
+Refer to the `package.json` file for a full list of dependencies.
 
 ## Development
 
 This project uses TypeScript. Make sure to follow the established coding style and practices.
 
-## Testing
-
-Tests can be run using the `npm test` command. For more specific test runs, use the scripts mentioned in the Scripts section.
 
 ## Contributing
 
-[Add contribution guidelines here]
+We welcome contributions to the NestJS Food Delivery Project! Here are some guidelines to help you get started:
 
-## License
+1. **Fork the Repository**: Start by forking the repository to your own GitHub account.
 
-This project is licensed under the UNLICENSED license.
+2. **Clone the Repository**: Clone your forked repository to your local machine.
+
+3. **Create a Branch**: Create a new branch for your feature or bug fix.
+   ```
+   git checkout -b feature/your-feature-name
+   ```
+
+4. **Make Changes**: Make your changes in the new branch. Be sure to follow the existing coding style and conventions.
+
+5. **Write Tests**: If adding new functionality, please include relevant tests.
+
+6. **Run Tests**: Ensure all tests pass by running:
+   ```
+   npm test
+   ```
+
+7. **Lint Your Code**: Make sure your code passes the linter:
+   ```
+   npm run lint
+   ```
+
+8. **Commit Changes**: Commit your changes with a clear and descriptive commit message.
+   ```
+   git commit -m "Add a concise description of your changes"
+   ```
+
+9. **Push Changes**: Push your changes to your forked repository.
+   ```
+   git push origin feature/your-feature-name
+   ```
+
+10. **Create a Pull Request**: Go to the original repository on GitHub and create a new pull request from your feature branch.
+
+11. **Code Review**: Wait for the maintainers to review your pull request. Be open to feedback and be prepared to make additional changes if requested.
+
+12. **Merge**: Once approved, your pull request will be merged into the main branch.
+
+### Code Style
+
+- Follow the existing code style in the project.
+- Use meaningful variable and function names.
+- Comment your code where necessary, especially for complex logic.
+
+### Reporting Issues
+
+If you find a bug or have a suggestion for improvement:
+
+1. Check if the issue already exists in the GitHub issue tracker.
+2. If not, create a new issue, providing as much relevant information as possible.
+
+### Questions
+
+If you have any questions about contributing, feel free to ask in the GitHub issues section.
+
+Thank you for contributing to the NestJS Food Delivery Project! ✨
+
