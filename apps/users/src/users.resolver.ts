@@ -43,11 +43,11 @@ export class UserResolver {
   }
 
   @Mutation(() => LoginResponse)
-  async Login(
+  async login(
     @Args('email') email: string,
     @Args('password') password: string,
   ): Promise<LoginResponse> {
-    return await this.userService.Login({ email, password });
+    return await this.userService.login({ email, password });
   }
 
   @Query(() => LoginResponse)

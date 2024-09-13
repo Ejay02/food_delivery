@@ -24,7 +24,7 @@ export class UsersService {
     private readonly emailService: EmailService,
   ) {}
 
-  async Login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
     const user = await this.prisma.user.findUnique({
       where: {
