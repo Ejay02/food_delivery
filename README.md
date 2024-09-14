@@ -50,6 +50,13 @@ To run the application in development mode:
 
 The application should now be running and accessible.
 
+### To Access Prisma 
+- cd into microservice[user or gateway] and run
+  
+```
+npx prisma studio
+```
+
 
 
 ## Dependencies
