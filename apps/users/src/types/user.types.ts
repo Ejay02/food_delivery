@@ -39,12 +39,24 @@ export class LoginResponse {
   @Field({ nullable: true })
   refreshToken?: string;
 
-  @Field(() => ErrorType, { nullable: true })
-  error?: ErrorType;
+  // @Field(() => ErrorType, { nullable: true })
+  // error?: ErrorType;
 }
 
 @ObjectType()
 export class LogoutResponse {
   @Field()
   message: string;
+}
+
+@ObjectType()
+export class ForgotPasswordResponse {
+  @Field()
+  message: string;
+}
+
+@ObjectType()
+export class ResetPasswordResponse {
+  @Field(() => User, { nullable: true })
+  user: User | any;
 }

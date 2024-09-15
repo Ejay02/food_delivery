@@ -22,8 +22,11 @@ export class AuthGuard implements CanActivate {
     const gqlContext = GqlExecutionContext.create(context);
     const { req } = gqlContext.getContext();
 
-    const accessToken = req.headers.accesstoken as string;
-    const refreshToken = req.headers.refreshtoken as string;
+    // Extracting the accessToken and refreshToken
+
+    const accessToken = req.headers['access-token']; // Get token from authorization header
+
+    const refreshToken = req.headers['refresh-token']; // Get token from refresh-token header
 
     if (!accessToken || !refreshToken) {
       throw new UnauthorizedException('Unauthorized access');
@@ -46,7 +49,7 @@ export class AuthGuard implements CanActivate {
 
   private async updateAccessToken(req: any): Promise<void> {
     try {
-      const refreshTokenData = req.headers.refreshtoken as string;
+      const refreshTokenData = req.headers['refresh-token'];
       const decoded = this.jwtService.verify(refreshTokenData, {
         secret: this.config.get<string>('REFRESH_TOKEN_SECRET'),
       });

@@ -1,12 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService, JwtVerifyOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ActivationDto, LoginDto, RegisterDto } from './dto/user.dto';
+import {
+  ActivationDto,
+  ForgotPasswordDto,
+  LoginDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from './dto/user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
 import { TokenSender } from './utils/sendToken';
+import { User } from '@prisma/client';
 
 interface UserData {
   name: string;
@@ -26,24 +37,23 @@ export class UsersService {
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
+
+    // Find user by email
     const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
-    if (user && (await this.comparePassword(password, user.password))) {
+    // Return early if user is not found or password is incorrect
+    if (!user || !(await this.comparePassword(password, user.password))) {
+      throw new BadRequestException('Invalid email or password');
+    }
+
+    try {
+      // Create and send token
       const tokenSender = new TokenSender(this.configService, this.jwtService);
       return tokenSender.sendToken(user);
-    } else {
-      return {
-        user: null,
-        accessToken: null,
-        refreshToken: null,
-        error: {
-          message: 'Invalid email or password',
-        },
-      };
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to generate token');
     }
   }
 
@@ -171,7 +181,7 @@ export class UsersService {
 
       return { user, accessToken, refreshToken };
     } catch (error) {
-      console.log('error:', error);
+      throw new BadRequestException('Error validating user', error.message);
     }
   }
 
@@ -181,6 +191,68 @@ export class UsersService {
     req.accesstoken = null;
 
     return { message: 'Logged out successfully!' };
+  }
+
+  async forgotPasswordLink(user: User) {
+    const forgotPasswordToken = this.jwtService.sign(
+      { user },
+      {
+        secret: this.configService.get<string>('FORGOT_PASSWORD_SECRET'),
+        expiresIn: '5m',
+      },
+    );
+    return forgotPasswordToken;
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const { email } = forgotPasswordDto;
+
+    // Find user by email
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new BadRequestException('No user found with this email');
+    }
+
+    const forgotPasswordToken = await this.forgotPasswordLink(user);
+
+    const resetPasswordUrl =
+      this.configService.get<string>('FRONTEND_URL') +
+      `/reset-password?verify=${forgotPasswordToken}`;
+
+    await this.emailService.sendMail({
+      email,
+      subject: 'Reset your password',
+      template: './forgot-password',
+      name: user.name,
+      activationCode: resetPasswordUrl,
+    });
+    return { message: 'Forgot password request successful' };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { password, activationToken } = resetPasswordDto;
+
+    const decoded = await this.jwtService.decode(activationToken);
+
+    if (!decoded || decoded?.exp * 1000 < Date.now()) {
+      throw new BadRequestException('Invalid token.');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await this.prisma.user.update({
+      where: {
+        id: decoded.user.id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    return { user };
   }
 
   // get all

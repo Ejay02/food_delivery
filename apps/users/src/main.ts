@@ -9,8 +9,20 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:5172', 'http://localhost:5173'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Refresh-Token', 'Authorization'],
-    exposedHeaders: ['Content-Type', 'Refresh-Token', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Access-Token',
+      'Refresh-Token',
+      'X-Refresh-Token ',
+      'Authorization',
+    ],
+    exposedHeaders: [
+      'Content-Type',
+      'Access-Token',
+      'Refresh-Token',
+      'X-Refresh-Token ',
+      'Authorization',
+    ],
   });
 
   app.useStaticAssets(join(__dirname, '..', 'public'));

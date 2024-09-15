@@ -3,11 +3,18 @@ import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import {
   ActivationResponse,
+  ForgotPasswordResponse,
   LoginResponse,
   LogoutResponse,
   RegisterResponse,
+  ResetPasswordResponse,
 } from './types/user.types';
-import { ActivationDto, RegisterDto } from './dto/user.dto';
+import {
+  ActivationDto,
+  ForgotPasswordDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from './dto/user.dto';
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
@@ -50,13 +57,27 @@ export class UserResolver {
     return await this.userService.login({ email, password });
   }
 
+  @Mutation(() => ForgotPasswordResponse)
+  async forgotPassword(
+    @Args('forgotPasswordInput') forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponse> {
+    return await this.userService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  async resetPassword(
+    @Args('resetPasswordInput') resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponse> {
+    return await this.userService.resetPassword(resetPasswordDto);
+  }
+
   @Query(() => LoginResponse)
   @UseGuards(AuthGuard)
   async authUser(@Context() context: { req: Request }) {
     return await this.userService.authUser(context.req);
   }
 
-  @Query(() => LogoutResponse)
+  @Mutation(() => LogoutResponse)
   @UseGuards(AuthGuard)
   async logout(@Context() context: { req: Request }) {
     return await this.userService.logout(context.req);
