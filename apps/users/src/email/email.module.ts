@@ -19,7 +19,7 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
           },
         },
         defaults: {
-          from: 'DeliveryZone',
+          from: 'Quick Dash',
         },
         template: {
           dir: join(__dirname, '../../../email-templates'),

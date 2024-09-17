@@ -11,12 +11,12 @@ import {
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
-} from './dto/user.dto';
-import { PrismaService } from '../prisma/prisma.service';
+} from '../dto/user.dto';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
-import { EmailService } from './email/email.service';
-import { TokenSender } from './utils/sendToken';
+import { EmailService } from '../email/email.service';
+import { TokenSender } from '../utils/sendToken';
 import { User } from '@prisma/client';
 
 interface UserData {
@@ -35,13 +35,20 @@ export class UsersService {
     private readonly emailService: EmailService,
   ) {}
 
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
     // Find user by email
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    const user = await this.getUserByEmail(email);
+    // const user = await this.prisma.user.findUnique({
+    //   where: { email },
+    // });
 
     // Return early if user is not found or password is incorrect
     if (!user || !(await this.comparePassword(password, user.password))) {
@@ -96,6 +103,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         phone_number,
+        isGoogleUser: false,
       };
 
       const activationToken = await this.createActivationToken(user);
@@ -258,5 +266,65 @@ export class UsersService {
   // get all
   async getUsers() {
     return this.prisma.user.findMany({});
+  }
+
+  async updateUser(id: string, data: any) {
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async googleSignIn(payload: {
+    email: string;
+    name: string;
+    picture: string;
+  }) {
+    const { email, name, picture } = payload;
+
+    // Check if user already exists
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { avatar: true },
+    });
+
+    if (!user) {
+      // If user doesn't exist, create a new one with avatar
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          name,
+          // isGoogleUser: true,
+          password: 'google-oauth-' + Math.random().toString(36).slice(-8), // Set an empty password for Google users
+          phone_number: null,
+          avatar: {
+            create: {
+              public_id: `google_${Date.now()}`,
+              url: picture,
+            },
+          },
+        },
+        include: { avatar: true },
+      });
+    } else if (!user.avatar) {
+      // If user exists but doesn't have an avatar, create one
+      await this.prisma.avatars.create({
+        data: {
+          public_id: `google_${Date.now()}`,
+          url: picture,
+          userId: user.id,
+        },
+      });
+
+      // Refresh user to include avatar
+      user = await this.prisma.user.findUnique({
+        where: { id: user.id },
+        include: { avatar: true },
+      });
+    }
+
+    // Create and send token
+    const tokenSender = new TokenSender(this.configService, this.jwtService);
+    return tokenSender.sendToken(user);
   }
 }

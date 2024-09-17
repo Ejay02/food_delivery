@@ -42,6 +42,9 @@ export class User {
   @Field({ nullable: true })
   phone_number: number;
 
+  @Field(() => Boolean)
+  isGoogleUser: boolean;
+
   @Field()
   createdAt: Date;
 

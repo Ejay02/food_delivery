@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { UsersModule } from './users.module';
+// import { UsersModule } from './users/users.module';
+import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(UsersModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
     origin: ['http://localhost:5172', 'http://localhost:5173'],

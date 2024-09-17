@@ -8,17 +8,17 @@ import {
   LogoutResponse,
   RegisterResponse,
   ResetPasswordResponse,
-} from './types/user.types';
+} from '../types/user.types';
 import {
   ActivationDto,
   ForgotPasswordDto,
   RegisterDto,
   ResetPasswordDto,
-} from './dto/user.dto';
+} from '../dto/user.dto';
 import { BadRequestException, UseGuards } from '@nestjs/common';
-import { User } from './entities/user.entity';
+import { User } from '../entities/user.entity';
 import { Response } from 'express';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Resolver('User')
 export class UserResolver {
