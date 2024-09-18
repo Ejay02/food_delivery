@@ -21,18 +21,14 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const { req } = gqlContext.getContext();
-    console.log('req:', req);
 
     // Extracting the accessToken and refreshToken
 
     const accessToken = req.headers['access-token']; // Get token from authorization header
-    console.log('accessToken:', accessToken);
 
-    // const refreshToken = req.headers['refresh-token']; // Get token from refresh-token header
-    // console.log('refreshToken:', refreshToken);
+    const refreshToken = req.headers['refresh-token']; // Get token from refresh-token header
 
-    // if (!accessToken || !refreshToken) {
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
       throw new UnauthorizedException('Unauthorized access');
     }
 
