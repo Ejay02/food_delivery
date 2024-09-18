@@ -24,8 +24,11 @@ export class ActivationResponse {
   @Field(() => User)
   user: User | any;
 
-  @Field(() => ErrorType, { nullable: true })
-  error?: ErrorType;
+  @Field({ nullable: true })
+  accessToken?: string;
+
+  @Field({ nullable: true })
+  refreshToken?: string;
 }
 
 @ObjectType()

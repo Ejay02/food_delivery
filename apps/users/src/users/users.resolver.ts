@@ -78,7 +78,6 @@ export class UserResolver {
   }
 
   @Mutation(() => LogoutResponse)
-  @UseGuards(AuthGuard)
   async logout(@Context() context: { req: Request }) {
     return await this.userService.logout(context.req);
   }

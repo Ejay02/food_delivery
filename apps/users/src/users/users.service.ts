@@ -144,7 +144,7 @@ export class UsersService {
     return { token, activationCode };
   }
 
-  // activate user
+  // activate new user
   async activateUser(activationDto: ActivationDto, response: Response) {
     const { activationToken, activationCode } = activationDto;
 
@@ -166,19 +166,41 @@ export class UsersService {
     });
 
     if (existUser) {
-      throw new BadRequestException('User already exist with this email');
+      throw new BadRequestException('User already exists with this email');
     }
 
-    const user = await this.prisma.user.create({
-      data: {
-        name,
-        email,
-        password,
-        phone_number,
-      },
+    // Start a transaction
+    const transaction = await this.prisma.$transaction(async (prisma) => {
+      try {
+        // Create the user within the transaction
+        const user = await prisma.user.create({
+          data: {
+            name,
+            email,
+            password,
+            phone_number,
+          },
+        });
+
+        // Generate access and refresh tokens
+        const tokenSender = new TokenSender(
+          this.configService,
+          this.jwtService,
+        );
+        const tokens = tokenSender.sendToken(user);
+
+        // Return tokens and the user data
+        return { user, ...tokens };
+      } catch (error) {
+        throw new InternalServerErrorException(
+          'Failed to activate user',
+          error.message,
+        );
+      }
     });
 
-    return { user, response };
+    // Return transaction results (user and tokens)
+    return { ...transaction, response };
   }
 
   async authUser(req: any) {
@@ -282,6 +304,11 @@ export class UsersService {
   }) {
     const { email, name, picture } = payload;
 
+    const googlePassword =
+      'google-oauth-' + Math.random().toString(36).slice(-8);
+
+    const hashedPassword = await bcrypt.hash(googlePassword, 10);
+
     // Check if user already exists
     let user = await this.prisma.user.findUnique({
       where: { email },
@@ -294,8 +321,8 @@ export class UsersService {
         data: {
           email,
           name,
-          // isGoogleUser: true,
-          password: 'google-oauth-' + Math.random().toString(36).slice(-8), // Set an empty password for Google users
+          password: hashedPassword,
+
           phone_number: null,
           avatar: {
             create: {
