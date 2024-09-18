@@ -46,9 +46,6 @@ export class UsersService {
 
     // Find user by email
     const user = await this.getUserByEmail(email);
-    // const user = await this.prisma.user.findUnique({
-    //   where: { email },
-    // });
 
     // Return early if user is not found or password is incorrect
     if (!user || !(await this.comparePassword(password, user.password))) {

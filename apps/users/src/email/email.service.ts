@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 type mailOptions = {
   subject: string;
@@ -30,7 +30,7 @@ export class EmailService {
         },
       });
     } catch (error) {
-      console.log('Error from email service', error);
+      throw new BadRequestException('Error sending email', error);
     }
   }
 }
