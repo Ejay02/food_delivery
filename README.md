@@ -57,7 +57,11 @@ The application should now be running and accessible.
 npx prisma studio
 ```
 
+- to resync db 
 
+```
+npx prisma db push
+```
 
 ## Dependencies
 

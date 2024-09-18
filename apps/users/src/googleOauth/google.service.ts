@@ -53,6 +53,7 @@ export class GoogleAuthService {
 
       return { ...signInResult, googleTokens: tokens };
     } catch (error) {
+      console.log('error:', error);
       throw new BadRequestException('Failed to validate Code');
     }
   }
