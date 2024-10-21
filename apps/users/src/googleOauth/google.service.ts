@@ -18,13 +18,16 @@ export class GoogleAuthService {
     this.googleClient = new OAuth2Client(
       this.configService.get<string>('GOOGLE_CLIENT_ID'),
       this.configService.get<string>('GOOGLE_CLIENT_SECRET'),
-      this.configService.get<string>('GOOGLE_REDIRECT_URI'),
+      this.configService.get<string>('GOOGLE_ADMIN_REDIRECT_URI') ||
+        this.configService.get<string>('GOOGLE_REDIRECT_URI'),
     );
   }
 
   async exchangeCodeForTokens(code: string) {
     try {
-      const redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI');
+      const redirectUri =
+        this.configService.get<string>('GOOGLE_ADMIN_REDIRECT_URI') ||
+        this.configService.get<string>('GOOGLE_REDIRECT_URI');
 
       const { tokens } = await this.googleClient.getToken({
         code,
