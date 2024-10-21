@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npx prisma generate --schema=./apps/users/prisma/schema.prisma && npx prisma migrate deploy --schema=./apps/users/prisma/schema.prisma && nest build",
+    "build": "npx prisma generate --schema=./apps/users/prisma/schema.prisma && nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
