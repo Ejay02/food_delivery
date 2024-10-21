@@ -245,10 +245,15 @@ export class UsersService {
 
     const forgotPasswordToken = await this.forgotPasswordLink(user);
 
-    const resetPasswordUrl =
-      this.configService.get<string>('ADMIN_FE_URL') ||
-      this.configService.get<string>('FRONTEND_URL') +
-        `/reset-password?verify=${forgotPasswordToken}`;
+    const adminFEUrl = this.configService.get<string>('ADMIN_FE_URL');
+    const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+
+    let resetPasswordUrl;
+    if (adminFEUrl) {
+      resetPasswordUrl = `${adminFEUrl}/reset-password?verify=${forgotPasswordToken}`;
+    } else {
+      resetPasswordUrl = `${frontendUrl}/reset-password?verify=${forgotPasswordToken}`;
+    }
 
     await this.emailService.sendMail({
       email,
