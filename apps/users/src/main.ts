@@ -8,7 +8,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:5172', 'http://localhost:5173'],
+    origin: [
+      'http://localhost:5172',
+      'http://localhost:5173',
+      'quick-dash.netlify.app',
+      'quick-dash-restaurant.netlify.app/',
+    ],
     credentials: true,
     allowedHeaders: [
       'Content-Type',
