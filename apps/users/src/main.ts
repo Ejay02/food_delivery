@@ -11,8 +11,8 @@ async function bootstrap() {
     origin: [
       'http://localhost:5172',
       'http://localhost:5173',
-      'quick-dash.netlify.app',
-      'quick-dash-restaurant.netlify.app/',
+      'https://quick-dash.netlify.app',
+      'https://quick-dash-restaurant.netlify.app/',
     ],
     credentials: true,
     allowedHeaders: [
