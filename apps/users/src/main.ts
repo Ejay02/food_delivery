@@ -12,7 +12,7 @@ async function bootstrap() {
       'http://localhost:5172',
       'http://localhost:5173',
       'https://quick-dash.netlify.app',
-      'https://quick-dash-restaurant.netlify.app/',
+      'https://quick-dash-restaurant.netlify.app',
     ],
     credentials: true,
     allowedHeaders: [
