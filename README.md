@@ -12,7 +12,6 @@ The project is set up as a monorepo with multiple applications:
 ## Prerequisites
 
 - Node.js (version specified in package.json)
-- npm (comes with Node.js)
 - Docker (optional, for containerization)
 
 ## Installation
